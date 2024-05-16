@@ -16,8 +16,21 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated, IsOrganizer]
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
 
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        event = serializer.validated_data["event"]
+        if Booking.objects.filter(event=event).count() >= event.capacity:
+            raise serializer.validation_error(detail="Event is full")
+
+        serializer.save(user=self.request.user)
