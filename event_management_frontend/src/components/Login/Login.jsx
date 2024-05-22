@@ -22,7 +22,7 @@ export function Login() {
   return (
     <div className="container">
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
         <div className="form-group">
           <label>Username</label>
           <input
@@ -41,6 +41,7 @@ export function Login() {
           <input
             type="password"
             className="form-control"
+            placeholder="Password"
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -48,7 +49,6 @@ export function Login() {
             required
           />
         </div>
-
         <button type="submit" className="btn btn-primary">
           Login
         </button>

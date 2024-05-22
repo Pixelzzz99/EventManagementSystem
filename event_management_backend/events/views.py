@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import EventType, Event, Booking
@@ -8,7 +9,7 @@ from users.decorators import IsAdmin, IsOrganizer
 class EventTypeViewSet(viewsets.ModelViewSet):
     queryset = EventType.objects.all()
     serializer_class = EventTypeSerializer
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAuthenticated, IsOrganizer,]
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -29,8 +30,10 @@ class BookingViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        event = serializer.validated_data["event"]
-        if Booking.objects.filter(event=event).count() >= event.capacity:
-            raise serializer.validation_error(detail="Event is full")
-
-        serializer.save(user=self.request.user)
+        event = serializer.validated_data['event']
+        if event.capacity > 0:
+            event.capacity -= 1
+            event.save()
+            serializer.save(user=self.request.user)
+        else:
+            raise ValidationError('This event is fully booked.')

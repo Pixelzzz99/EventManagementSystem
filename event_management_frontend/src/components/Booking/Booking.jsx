@@ -2,14 +2,13 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export function Register() {
+export function Booking() {
   const [formData, setFormData] = useState({
-    username: "",
-    password: "",
+    name: "",
     email: "",
-    role: "user",
+    event: "",
+    count: 1,
   });
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,11 +19,10 @@ export function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://127.0.0.1:8000/api/register/", formData, {
-        headers: { "Content-Type": "application/json" },
-      })
+      .post("http://127.0.0.1:8000/api/bookings/", formData)
       .then((response) => {
-        navigate("/login");
+        console.log(response.data);
+        navigate("/booking-success");
       })
       .catch((error) => {
         console.log(error);
@@ -32,39 +30,27 @@ export function Register() {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">Register</h2>
+    <div className="container mt-5 p-5 ">
+      <h2 className="mb-4">Booking</h2>
       <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
         <div className="form-group">
-          <label htmlFor="username">Username</label>
+          <label>Name</label>
           <input
             type="text"
             className="form-control"
-            id="username"
-            name="username"
-            value={formData.username}
+            placeholder="Name"
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label>Email</label>
           <input
             type="email"
             className="form-control"
-            id="email"
+            placeholder="Email"
             name="email"
             value={formData.email}
             onChange={handleChange}
@@ -72,20 +58,30 @@ export function Register() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="role">Role</label>
-          <select
+          <label htmlFor="event">Event</label>
+          <input
+            type="text"
             className="form-control"
-            id="role"
-            name="role"
-            value={formData.role}
+            id="event"
+            value={formData.event}
             onChange={handleChange}
-          >
-            <option value="user">User</option>
-            <option value="organizer">Organizer</option>
-          </select>
+            required
+          />
         </div>
-        <button type="submit" className="btn btn-primary">
-          Register
+        <div className="form-group">
+          <label htmlFor="event">Count</label>
+          <input
+            type="text"
+            className="form-control"
+            id="event"
+            value={formData.count}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <button type="submit" className="btn btn-primary  btn-lg">
+          Book Now
         </button>
       </form>
     </div>

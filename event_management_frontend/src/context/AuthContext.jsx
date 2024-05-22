@@ -29,9 +29,10 @@ const AuthProvider = ({ children }) => {
 
   const login = (username, password) => {
     return axios
-      .post("http://127.0.0.1:8000/api/token", { username, password })
+      .post("http://127.0.0.1:8000/api/token/", { username, password })
       .then((response) => {
         const token = response.data.access;
+        console.log(token);
         localStorage.setItem("access_token", token);
         axios
           .get("http://127.0.0.1:8000/api/user/", {
